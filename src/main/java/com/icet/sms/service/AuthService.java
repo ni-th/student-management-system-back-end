@@ -1,11 +1,14 @@
 package com.icet.sms.service;
 
+import com.icet.sms.dto.UserDTO;
 import com.icet.sms.entities.User;
 import com.icet.sms.enums.UserRole;
 import com.icet.sms.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static com.icet.sms.enums.UserRole.ADMIN;
 
@@ -28,9 +31,17 @@ public class AuthService {
 
             userRepository.save(user);
             System.out.println("Admin Created");
+        }else{
+            System.out.println("Admin not Created");
         }
+    }
 
+    public Optional<User> login(UserDTO userDTO){
+        Optional<User> userByEmail = userRepository.findByEmail(userDTO.getEmail());
 
-
+        if (userByEmail.isPresent() && userByEmail.get().getPassword().equals(userDTO.getPassword())){
+            return userByEmail;
+        }
+        return null;
     }
 }
